@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev -p 3001",
     "build": "npm run generate:importmap && cross-env NODE_OPTIONS=--no-deprecation next build",
@@ -34,6 +37,8 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "typescript": "^5.6.0"
   }
 }
