@@ -147,7 +147,7 @@
   }
 
   .airplane {
-    bottom: calc(-20% - 60px);
+    bottom: calc(20% - 60px);
     width: 900px;
   }
     
