@@ -1,13 +1,48 @@
-import { ChevronLeft, ChevronRight, MessageCircle, CheckCircle, Hotel } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MessageCircle,
+  CheckCircle,
+  Hotel,
+} from "lucide-react";
 import { useTestimonials } from "@/hooks/useTestimonials";
 import { resolveImageUrl } from "@/lib/payload";
+import { useEffect, useRef, useState } from "react";
 
 /* ── Static fallback ── */
 const fallbackTestimonials = [
-  { id: "1", text: "Très sérieux. Ils répondent vite sur WhatsApp et expliquent tout (inclus / non inclus)", author: "Flown Marketing", date: "Septembre 2025", rating: 5, type: "text" as const },
-  { id: "2", text: "Franchement, expérience très rassurante du début à la fin. J'avais peur de réserver en ligne, mais tout était expliqué clairement : les dates, ce qui est inclus, les options d'hôtel, et même les détails du transfert.", author: "Flown Marketing", date: "Septembre 2025", rating: 5, type: "text" as const },
-  { id: "3", text: "On a réservé une option d'hôtel, ils ont confirmé la disponibilité rapidement. Très pro", author: "Flown Marketing", date: "Septembre 2025", rating: 5, type: "text" as const },
-  { id: "4", text: "Bon rapport qualité/prix et surtout un suivi vraiment rassurant.", author: "Flown Marketing", date: "Septembre 2025", rating: 5, type: "text" as const },
+  {
+    id: "1",
+    text: "Très sérieux. Ils répondent vite sur WhatsApp et expliquent tout (inclus / non inclus)",
+    author: "Flown Marketing",
+    date: "Septembre 2025",
+    rating: 5,
+    type: "text" as const,
+  },
+  {
+    id: "2",
+    text: "Franchement, expérience très rassurante du début à la fin. J'avais peur de réserver en ligne, mais tout était expliqué clairement : les dates, ce qui est inclus, les options d'hôtel, et même les détails du transfert.",
+    author: "Flown Marketing",
+    date: "Septembre 2025",
+    rating: 5,
+    type: "text" as const,
+  },
+  {
+    id: "3",
+    text: "On a réservé une option d'hôtel, ils ont confirmé la disponibilité rapidement. Très pro",
+    author: "Flown Marketing",
+    date: "Septembre 2025",
+    rating: 5,
+    type: "text" as const,
+  },
+  {
+    id: "4",
+    text: "Bon rapport qualité/prix et surtout un suivi vraiment rassurant.",
+    author: "Flown Marketing",
+    date: "Septembre 2025",
+    rating: 5,
+    type: "text" as const,
+  },
 ];
 
 const Stars = ({ count }: { count: number }) => (
@@ -25,18 +60,60 @@ const Stars = ({ count }: { count: number }) => (
 );
 
 const TestimonialsSection = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  useEffect(() => {
+    // S'assure que la vidéo démarre bien sans son (autoplay autorisé)
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+      setIsMuted(true);
+    }
+  }, []);
+
   const { data: cmsTestimonials } = useTestimonials();
   const allItems = cmsTestimonials?.length ? cmsTestimonials : fallbackTestimonials;
 
   const textItems = allItems.filter((t) => t.type !== "video");
   const videoItem = allItems.find((t) => t.type === "video");
+
   const videoImageSrc = videoItem
-    ? resolveImageUrl((videoItem as any).videoImage, (videoItem as any).videoImageUrl) || "/assets/figma/testimonial.png"
+    ? resolveImageUrl(
+        (videoItem as any).videoImage,
+        (videoItem as any).videoImageUrl,
+      ) || "/assets/figma/testimonial.png"
     : "/assets/figma/testimonial.png";
-  const videoQuoteText = (videoItem as any)?.videoQuote || "Organisation au top, tout était clair dès le départ. On a reçu les infos et l'assistance quand il fallait.";
-  const videoAuthorText = videoItem ? `- ${videoItem.author}, ${videoItem.date}` : "- Flown Marketing, Septembre 2025";
+
+  const videoQuoteText =
+    (videoItem as any)?.videoQuote ||
+    "Organisation au top, tout était clair dès le départ. On a reçu les infos et l'assistance quand il fallait.";
+
+  const videoAuthorText = videoItem
+    ? `- ${videoItem.author}, ${videoItem.date}`
+    : "- Flown Marketing, Septembre 2025";
+
+  const toggleMute = async () => {
+    const v = videoRef.current;
+    if (!v) return;
+
+    v.muted = !v.muted;
+    setIsMuted(v.muted);
+
+    // Sécurité: si le navigateur a mis la vidéo en pause, on la relance après interaction utilisateur
+    if (v.paused) {
+      try {
+        await v.play();
+      } catch {
+        // ignore (peut arriver si la vidéo n'est pas chargée ou autre restriction)
+      }
+    }
+  };
+
   return (
-    <section id="temoignages" className="bg-[#F3F3F3] px-6 py-20 sm:px-10 lg:px-16">
+    <section
+      id="temoignages"
+      className="bg-[#F3F3F3] px-6 py-20 sm:px-10 lg:px-16"
+    >
       <div className="mx-auto max-w-[1380px]">
         <div className="-mt-5 mb-12 text-center">
           <h2 className="font-jakarta font-bold text-[34px] sm:text-[44px] tracking-[-2px] leading-[1.08]">
@@ -44,7 +121,8 @@ const TestimonialsSection = () => {
             <span className="text-gold-100">nos voyageurs</span>
           </h2>
           <p className="mx-auto mt-4 max-w-[420px] text-[17px] leading-[1.5] tracking-[-0.6px] text-black-50 sm:text-[20px]">
-            Chaque voyage est organisé avec clarté, disponibilité confirmée et assistance
+            Chaque voyage est organisé avec clarté, disponibilité confirmée et
+            assistance
           </p>
         </div>
 
@@ -71,7 +149,7 @@ const TestimonialsSection = () => {
                 <div className="flex items-start gap-3">
                   <Hotel className="mt-0.5 h-4 w-4 flex-shrink-0 text-black-40" />
                   <span className="text-[15px] leading-[1.6] tracking-[-0.3px] text-black-50">
-                    Hôtels au choix selon l'offre
+                    Hôtels au choix selon l&apos;offre
                   </span>
                 </div>
               </div>
@@ -92,6 +170,7 @@ const TestimonialsSection = () => {
 
           <div className="w-full lg:w-[360px] flex-shrink-0 rounded-2xl relative overflow-hidden group min-h-[520px]">
             <video
+              ref={videoRef}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               src="/assets/videos/SnapInsta.to_AQMAHRM57p7nModboS3yXZBxNOz90lKZYaFnnGdo1VKx2MXyCJQP-hZTYYqLX7eM1DYaKtdnvLTzJNLXZSwfBlgEDDyU884nCksX4O0.mp4"
               poster={videoImageSrc}
@@ -100,7 +179,17 @@ const TestimonialsSection = () => {
               muted
               playsInline
             />
+
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
+
+            {/* Bouton Unmute/Mute */}
+            <button
+              type="button"
+              onClick={toggleMute}
+              className="absolute top-4 right-4 z-20 px-3 py-2 rounded-full bg-black/40 text-white text-xs backdrop-blur hover:bg-black/55 transition"
+            >
+              {isMuted ? "Unmute" : "Mute"}
+            </button>
 
             <div className="absolute bottom-[120px] left-4 right-4 flex justify-between">
               <button className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/40 transition-colors">
@@ -140,6 +229,7 @@ const TestimonialsSection = () => {
                   </span>
                 </div>
               ))}
+
               {textItems.map((t, i) => (
                 <div
                   key={`dup-${i}`}
