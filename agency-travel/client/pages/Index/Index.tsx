@@ -16,7 +16,6 @@ const navLinks = [
   { label: "Témoignages", href: "#temoignages" },
   { label: "FAQ", href: "#faq" },
   { label: "Gallerie", href: "/gallerie" },
-
 ];
 
 export default function Index() {
@@ -183,7 +182,7 @@ export default function Index() {
                 </div>
               </div>
               <p className="text-sm font-medium tracking-tight">
-                Personnes ont voyagé avec nous !
+                Personnes ont voyagé avec nous!
               </p>
             </div>
 
@@ -217,7 +216,7 @@ export default function Index() {
           {/* Hero Visuals - Monuments + Plane at bottom, clipped by overflow-hidden */}
           <div
             ref={heroVisualsRef}
-            className="absolute bottom-0 left-0 right-0 h-[380px] sm:h-[400px] lg:h-[440px] pointer-events-none"
+            className="absolute bottom-0 left-0 right-0 h-[600px] sm:h-[400px] lg:h-[440px] pointer-events-none"
           >
             <div className={`relative w-full h-full max-w-[1200px] mx-auto ${heroVisible ? styles.animate : ""}`}>
               {/* Taj Mahal – -20.55° */}
